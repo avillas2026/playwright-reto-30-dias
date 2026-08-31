@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test"
+import { LoginPage } from "../pageobjects/LoginPage"
 
 test('Get all usernames registered', async ({ page }) => {
 
-    await page.goto('https://opensource-demo.orangehrmlive.com')
-    await page.getByRole('textbox', { name: 'Username' }).fill('Admin')
-    await page.getByRole('textbox', { name: 'Password' }).fill('admin123')
-    await page.getByRole('button', { name: 'Login' }).click()
+    const loginPage = new LoginPage(page)
+    await loginPage.doLogin('Admin', 'admin123')
 
     await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible()
     await page.getByRole('link', { name: 'Admin' }).click()
@@ -35,10 +34,8 @@ test('Get all usernames registered', async ({ page }) => {
 
 test('Get all Employee Name registered', async ({ page }) => {
 
-    await page.goto('https://opensource-demo.orangehrmlive.com');
-    await page.getByRole('textbox', { name: 'Username' }).fill('Admin');
-    await page.getByRole('textbox', { name: 'Password' }).fill('admin123');
-    await page.getByRole('button', { name: 'Login' }).click();
+    const loginPage = new LoginPage(page)
+    await loginPage.doLogin('Admin', 'admin123')
 
     await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
     await page.getByRole('link', { name: 'Admin' }).click();
@@ -68,12 +65,10 @@ test('Get all Employee Name registered', async ({ page }) => {
 // Este test falla si los usuarios de la tabla cambian.
 test('Select specific user for edition', async ({ page }) => {
 
-     const userForEdition = 'PutTestt'
+     const userForEdition = 'Jobinsam@6742' //Modificar usuario antes de correr
 
-    await page.goto('https://opensource-demo.orangehrmlive.com');
-    await page.getByRole('textbox', { name: 'Username' }).fill('Admin');
-    await page.getByRole('textbox', { name: 'Password' }).fill('admin123');
-    await page.getByRole('button', { name: 'Login' }).click();
+    const loginPage = new LoginPage(page)
+    await loginPage.doLogin('Admin', 'admin123')
 
     await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
     await page.getByRole('link', { name: 'Admin' }).click();
@@ -104,10 +99,8 @@ test('Select specific user for edition', async ({ page }) => {
 
 test('Usuario aleatorio para editar', async ({ page }) => {
 
-    await page.goto('https://opensource-demo.orangehrmlive.com');
-    await page.getByRole('textbox', { name: 'Username' }).fill('Admin');
-    await page.getByRole('textbox', { name: 'Password' }).fill('admin123');
-    await page.getByRole('button', { name: 'Login' }).click();
+    const loginPage = new LoginPage(page)
+    await loginPage.doLogin('Admin', 'admin123')
 
     await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
     await page.getByRole('link', { name: 'Admin' }).click();
@@ -123,7 +116,8 @@ test('Usuario aleatorio para editar', async ({ page }) => {
 
     if (rowsCount > 0) {
 
-        const rowsAleatorio = Math.floor(Math.random() * 10) + 1;
+        const rowsAleatorio = Math.floor(Math.random() * rowsCount) + 1;
+        console.log('Fila Aleatoria: ', rowsAleatorio)
     const userForEdition = String(await rows.nth(rowsAleatorio).getByRole('cell').nth(1).textContent())
     console.log('Usuario Aleatorio: ', userForEdition)
 
