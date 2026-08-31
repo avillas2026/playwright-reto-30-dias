@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pageobjects/LoginPage';
+import { SidePanel, SideMenuOption } from '../components/SidePanel';
 
 test('Check left menu options', async ({ page }) => {
 
@@ -149,5 +150,21 @@ test('Check all the Pin/Configurations links', async ({ page }) => {
         await page.getByRole('navigation', { name: 'Topbar menu' }).getByText('Configuration').click()
 
     }
+
+});
+
+
+test ('Buscando un menu', async ({page}) => {
+
+    const loginPage = new LoginPage(page)
+    await loginPage.doLogin('Admin', 'admin123')
+
+    const sidepanel = new SidePanel(page)
+    await sidepanel.searchOption(SideMenuOption.CLAIM)
+
+    const leftMenuItems = await page.getByLabel('Sidepanel').getByRole('listitem').innerText();
+        console.log (leftMenuItems)
+        expect(leftMenuItems).toContain(SideMenuOption.CLAIM);       
+
 
 });
