@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+import { Environment } from '../config/Environment';
 
 export class LoginPage {
 
@@ -6,12 +7,15 @@ export class LoginPage {
     readonly usernameInput: Locator
     readonly passwordInput: Locator
     readonly loginButton: Locator
+    readonly menuOptionAdmin: Locator
+    
 
     constructor(page: Page) {
         this.page = page
         this.usernameInput = page.getByRole('textbox', { name: 'Username' })
         this.passwordInput = page.getByRole('textbox', { name: 'Password' })
         this.loginButton = page.getByRole('button', { name: 'Login' })
+        this.menuOptionAdmin = page.getByRole('link', { name: 'Admin' })
     }
 
     async doLogin(username: string, password: string) {
@@ -22,4 +26,16 @@ export class LoginPage {
         await this.loginButton.click()
 
     }
+
+    async loginAsAdmin(){
+        await this.doLogin(Environment.ADMIN_USERNAME, Environment.ADMIN_PASSWORD)
+    }
+
+    async loginAsEmployed(){
+        await this.doLogin(Environment.EMPLOYED_USERNAME, Environment.EMPLOYED_PASSWORD)
+            
+    }
+
+
+
 }
