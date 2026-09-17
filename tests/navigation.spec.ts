@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pageobjects/LoginPage';
 import { SidePanel, SideMenuOption } from '../components/SidePanel';
+import { TopBarMenu } from '../components/top-bar-menu/TopBarMenu';
 
 test('Check left menu options', async ({ page }) => {
 
     const loginPage = new LoginPage(page)
-    await loginPage.doLogin('Admin', 'admin123')
+    await loginPage.loginAsAdmin()
 
     await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
 
@@ -154,7 +155,7 @@ test('Check all the Pin/Configurations links', async ({ page }) => {
 });
 
 
-test ('Buscando un menu', async ({page}) => {
+test('Buscando un menu', async ({ page }) => {
 
     const loginPage = new LoginPage(page)
     await loginPage.doLogin('Admin', 'admin123')
@@ -163,8 +164,46 @@ test ('Buscando un menu', async ({page}) => {
     await sidepanel.searchOption(SideMenuOption.CLAIM)
 
     const leftMenuItems = await page.getByLabel('Sidepanel').getByRole('listitem').innerText();
-        console.log (leftMenuItems)
-        expect(leftMenuItems).toContain(SideMenuOption.CLAIM);       
+    console.log(leftMenuItems)
+    expect(leftMenuItems).toContain(SideMenuOption.CLAIM);
 
 
+});
+
+
+test('testing topbar menu', async ({ page }) => {
+
+    const loginPage = new LoginPage(page)
+    await loginPage.loginAsAdmin()
+
+    const sidepanel = new SidePanel(page)
+    await sidepanel.clickOnOption(SideMenuOption.ADMIN)
+
+    const topBarMenu = new TopBarMenu(page)
+    await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
+    await topBarMenu.job.clickOnItem(topBarMenu.JobItems.JOBTITLES)
+    await topBarMenu.job.clickOnItem(topBarMenu.JobItems.PAYGRADES)
+    await topBarMenu.job.clickOnItem(topBarMenu.JobItems.EMPLOYMENTSSTATUS)
+    await topBarMenu.job.clickOnItem(topBarMenu.JobItems.JOBCATEGORY)
+    await topBarMenu.job.clickOnItem(topBarMenu.JobItems.WORKSHIFT)
+});
+
+
+test('testing topbar menu - MORE', async ({ page }) => {
+
+    const loginPage = new LoginPage(page)
+    await loginPage.loginAsAdmin()
+
+    const sidepanel = new SidePanel(page)
+    await sidepanel.clickOnOption(SideMenuOption.ADMIN)
+
+    const topBarMenu = new TopBarMenu(page)
+/*     await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.EMAIL_CONFIGURATION)
+    await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.EMAIL_SUBSCRIPTIONS)
+    await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.LOCALIZATION)
+    await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.LANGUAGE_PACKAGES)
+    await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.MODULES) */
+    await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.SOCIAL_MEDIA_AUTHENTICATION)
+    await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.REGRISTER_OAUTH_CLIENT)
+    await topBarMenu.configuration.clickOnItem(topBarMenu.ConfigurationItems.LDAP_CONFIGURATION)
 });

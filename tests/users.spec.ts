@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test"
 import { LoginPage } from "../pageobjects/LoginPage"
+import { SidePanel, SideMenuOption } from "../components/SidePanel"
 
 test('Get all usernames registered', async ({ page }) => {
 
@@ -144,5 +145,48 @@ test('Usuario aleatorio para editar', async ({ page }) => {
     } else console.log('No se encontraron usuarios')
     
      /*  const currentUsername = await page.locator("//label[contains(., 'Username')]/parent::div/following-sibling::div/input").inputValue(); */
+
+});
+
+test('Check user role options', async({page}) =>{
+
+    const expectedRoleOptions = ['-- Select --', 'Admin', 'ESS']
+
+    const loginPage = new LoginPage(page)
+    await loginPage.loginAsAdmin()
+
+    const sidePanel = new SidePanel(page)
+    await sidePanel.clickOnOption(SideMenuOption.ADMIN)
+
+     await page.locator('.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow').nth(0).click()
+    const currentUserRoleOptions = await page.getByRole('listbox').getByRole('option').allInnerTexts()
+    
+    console.log(currentUserRoleOptions)
+
+     expect(currentUserRoleOptions,
+        'The options displayed in the User Role Dropdown do not match the expected options.').toEqual(expectedRoleOptions)
+ 
+
+});
+
+
+test('Check Status options', async({page}) =>{
+
+    const expectedStatusOptions = ['-- Select --', 'Enabled', 'Disabled']
+
+    const loginPage = new LoginPage(page)
+    await loginPage.loginAsAdmin()
+
+    const sidePanel = new SidePanel(page)
+    await sidePanel.clickOnOption(SideMenuOption.ADMIN)
+
+     await page.locator('.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow').nth(1).click()
+    const currentStatusOptions = await page.getByRole('listbox').getByRole('option').allInnerTexts()
+    
+    console.log(currentStatusOptions)
+
+     expect(currentStatusOptions,
+        'The options displayed in the User Role Dropdown do not match the expected options.').toEqual(expectedStatusOptions)
+ 
 
 });
