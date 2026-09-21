@@ -17,7 +17,7 @@ setup('authentication as admin', async ({ page }) => {
     console.log('Autenticacion completada usando el setup')
 })
 
-setup('authentication as employee', async({page}) => {
+/* setup('authentication as employee', async({page}) => {
 
     console.log('Autentication iniciada usando el setup')
 
@@ -29,4 +29,4 @@ setup('authentication as employee', async({page}) => {
     await page.context().storageState({path: 'auth/employee.json'})
 
     console.log('Autenticacion completada usando el setup')
-})
+}) */

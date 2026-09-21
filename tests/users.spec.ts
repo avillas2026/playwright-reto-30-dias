@@ -232,3 +232,106 @@ test ('Filter by user admin', async({page}) =>{
 
 });
 
+test('Add new user', async({page}) =>{
+
+    const randomUserName = 'go' + crypto.randomUUID()
+    const password = 'R4mdom45..*'
+    const employeeToSearch = 'Qwerty LName'
+
+    await page.goto("/web/index.php/dashboard/index")
+
+    const sidePanel = new SidePanel(page)
+    await sidePanel.clickOnOption(SideMenuOption.ADMIN)
+
+    const topBarMenu = new TopBarMenu(page)
+    await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
+
+    await page.getByRole('button', { name: 'Add' }).click()
+
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('User Role') })
+        .locator('div.oxd-select-text-input').click();
+
+    await page.getByRole('option', { name: 'ESS' }).click();
+
+    await page.getByRole('textbox', { name: 'Type for hints...' }).fill(employeeToSearch);
+    await page.getByText('Qwerty Qwerty LName', { exact: true }).click();
+    
+        await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Status') })
+        .locator('div.oxd-select-text-input').click();
+
+    await page.getByText('Enabled').click();
+
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Username') })
+        .getByRole('textbox').fill(randomUserName);
+
+        
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Password',{ exact: true}) })
+        .getByRole('textbox').fill(password);
+
+
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Confirm Password',{ exact: true}) })
+        .getByRole('textbox').fill(password);
+
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect(page.locator('p.oxd-text--toast-message')).toContainText('Successfully Saved')
+
+
+})
+
+
+test('Add new user - Failed', async({page}) =>{
+
+    const randomUserName = 'go' + crypto.randomUUID()
+    const password = 'R4mdom45..*'
+    const employeeToSearch = 'Qwerty LName'
+
+    await page.goto("/web/index.php/dashboard/index")
+
+    const sidePanel = new SidePanel(page)
+    await sidePanel.clickOnOption(SideMenuOption.ADMIN)
+
+    const topBarMenu = new TopBarMenu(page)
+    await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
+
+    await page.getByRole('button', { name: 'Add' }).click()
+
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('User Role') })
+        .locator('div.oxd-select-text-input').click();
+
+    await page.getByRole('option', { name: 'ESS' }).click();
+
+    await page.getByRole('textbox', { name: 'Type for hints...' }).fill(employeeToSearch);
+    await page.getByText('Qwerty Qwerty LName', { exact: true }).click();
+    
+        await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Status') })
+        .locator('div.oxd-select-text-input').click();
+
+    await page.getByText('Enabled').click();
+
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Username') })
+        .getByRole('textbox').fill(randomUserName);
+
+        
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Password',{ exact: true}) })
+        .getByRole('textbox').fill(password);
+
+
+    await page.locator('div.oxd-grid-item--gutters')
+        .filter({ has: page.getByText('Confirm Password',{ exact: true}) })
+        .getByRole('textbox').fill('Password');
+
+    await expect(page.locator('.oxd-input-field-error-message')).toContainText('Passwords do not match')
+
+
+})
+
