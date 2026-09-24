@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { UserModel } from "../models/UserModel";
 
 export class AddNewUserPage {
 
@@ -76,5 +77,17 @@ export class AddNewUserPage {
 
          await expect(this.page.locator('.oxd-input-field-error-message')).toContainText('Passwords do not match')
 
-    }
+   }
+
+   async addNewUser(user: UserModel){
+    await this.clickOnAdd()
+    await this.selectUserRole(user.role)
+    await this.selectEmployeeName(user.employee)
+    await this.selectStatus(user.status)
+    await this.enterUsername(user.userName)
+    await this.enterPassword(user.password)
+    await this.enterConfirmPassword(user.confimPassword)
+    await this.clickOnSave()
+
+   }
 }

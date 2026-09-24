@@ -4,6 +4,7 @@ import { SidePanel, SideMenuOption } from "../components/SidePanel"
 import { TopBarMenu } from "../components/top-bar-menu/TopBarMenu";
 import { Navigate } from "../pageobjects/Navigate";
 import { AddNewUserPage } from "../pageobjects/AddNewUserPage";
+import { UserModel } from "../models/UserModel";
 
 test('Get all usernames registered', async ({ page }) => {
 
@@ -249,15 +250,16 @@ test('Add new user', async ({ page }) => {
     const topBarMenu = new TopBarMenu(page)
     await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
 
+    const userToAdd:UserModel = {
+        userName: randomUserName,
+        employee: employeeToSearch,
+        password: password,
+        confimPassword: password,
+        role: 'ESS',
+        status: 'Enabled'
+    }
     const addNewUserPage = new AddNewUserPage(page)
-    await addNewUserPage.clickOnAdd()
-    await addNewUserPage.selectUserRole('ESS')
-    await addNewUserPage.selectEmployeeName(employeeToSearch)
-    await addNewUserPage.selectStatus('Enabled')
-    await addNewUserPage.enterUsername(randomUserName)
-    await addNewUserPage.enterPassword(password)
-    await addNewUserPage.enterConfirmPassword(password)
-    await addNewUserPage.clickOnSave()
+    await addNewUserPage.addNewUser(userToAdd)
     await addNewUserPage.checkUserWasAddedMessage()
 
 })
