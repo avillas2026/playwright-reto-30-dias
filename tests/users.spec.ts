@@ -251,14 +251,14 @@ test('Add new user', async ({ page }) => {
     const topBarMenu = new TopBarMenu(page)
     await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
 
-/*     const userToAdd:UserModel = {
-        userName: randomUserName,
-        employee: employeeToSearch,
-        password: password,
-        confirmPassword: password,
-        role: 'ESS',
-        status: 'Enabled'
-    } */
+    /*     const userToAdd:UserModel = {
+            userName: randomUserName,
+            employee: employeeToSearch,
+            password: password,
+            confirmPassword: password,
+            role: 'ESS',
+            status: 'Enabled'
+        } */
 
     const adminUser = UserFactory.createAdmin({
         employee: 'Dont Del'
@@ -294,7 +294,83 @@ test('Add new user - Failed', async ({ page }) => {
     await addNewUserPage.enterPassword(password)
     await addNewUserPage.enterConfirmPassword('wrongPassword')
     await addNewUserPage.checkMessageWrongPassword()
-   
+
+
+})
+
+test('Add new user Admin', async ({ page }) => {
+
+    const navigate = new Navigate(page)
+    await navigate.toDashboard()
+
+    const sidePanel = new SidePanel(page)
+    await sidePanel.clickOnOption(SideMenuOption.ADMIN)
+
+    const topBarMenu = new TopBarMenu(page)
+    await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
+
+    const allBodyRows = page.getByRole('table').getByRole('rowgroup').nth(1).getByRole('row')
+
+    const currentAdminRows = allBodyRows.filter({
+        has: page.getByRole('cell').nth(2).getByText('Admin')
+    })
+
+    const firstAdminToSearch = currentAdminRows.nth(0)
+    await expect(firstAdminToSearch, "No Admin users found in the table")
+
+    await firstAdminToSearch
+        .locator('button')
+        .filter({ has: page.locator('i.bi-pencil-fill') }).click()
+
+    const fullUserToSearch = await page.getByRole('textbox', { name: 'Type for hints...' }).inputValue()
+    console.log(`User to search ${fullUserToSearch}`)
+
+    const adminUser = UserFactory.createAdmin({
+        employee: fullUserToSearch
+    })
+
+    await page.goBack()
+    const addNewUserPage = new AddNewUserPage(page)
+    await addNewUserPage.addNewUser(adminUser)
+    await addNewUserPage.checkUserWasAddedMessage()
+
+})
+
+test('Add new user ESS', async ({ page }) => {
+
+    const navigate = new Navigate(page)
+    await navigate.toDashboard()
+
+    const sidePanel = new SidePanel(page)
+    await sidePanel.clickOnOption(SideMenuOption.ADMIN)
+
+    const topBarMenu = new TopBarMenu(page)
+    await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
+
+    const allBodyRows = page.getByRole('table').getByRole('rowgroup').nth(1).getByRole('row')
+
+    const currentESSRows = allBodyRows.filter({
+        has: page.getByRole('cell').nth(2).getByText('ESS')
+    })
+
+    const firstESSToSearch = currentESSRows.nth(0)
+    await expect(firstESSToSearch, "No ESS users found in the table")
+
+    await firstESSToSearch
+        .locator('button')
+        .filter({ has: page.locator('i.bi-pencil-fill') }).click()
+
+    const fullUserToSearch = await page.getByRole('textbox', { name: 'Type for hints...' }).inputValue()
+    console.log(`User to search: ${fullUserToSearch}`)
+
+    const ESSUser = UserFactory.createEmployeeESS({
+        employee: fullUserToSearch
+    })
+
+    await page.goBack()
+    const addNewUserPage = new AddNewUserPage(page)
+    await addNewUserPage.addNewUser(ESSUser)
+    await addNewUserPage.checkUserWasAddedMessage()
 
 })
 

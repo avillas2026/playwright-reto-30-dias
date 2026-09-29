@@ -7,7 +7,7 @@ export class UserFactory {
     private static base(overrides?: Partial<UserModel>): UserModel {
 
         const defaults: UserModel = {
-            userName: 'user-' + crypto.randomUUID().slice(0, 30),
+            userName: 'Ale-' + crypto.randomUUID().slice(0, 30),
             employee: 'Default employee',
             password: this.defaultPassword,
             confirmPassword: this.defaultPassword,
