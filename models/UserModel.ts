@@ -4,6 +4,6 @@ export interface UserModel {
     status: string,
     userName: string,
     password: string,
-    confimPassword: string
+    confirmPassword: string
 
 }

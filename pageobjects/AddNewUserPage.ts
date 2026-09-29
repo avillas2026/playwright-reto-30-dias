@@ -43,7 +43,7 @@ export class AddNewUserPage {
 
     async selectEmployeeName(employeeName: string) {
         await this.employeeName.fill(employeeName)
-        await this.page.getByText('Qwerty Qwerty LName', { exact: true }).click()
+        await this.page.getByText(employeeName, { exact: true }).click()
 
     }
 
@@ -86,7 +86,7 @@ export class AddNewUserPage {
     await this.selectStatus(user.status)
     await this.enterUsername(user.userName)
     await this.enterPassword(user.password)
-    await this.enterConfirmPassword(user.confimPassword)
+    await this.enterConfirmPassword(user.confirmPassword)
     await this.clickOnSave()
 
    }
