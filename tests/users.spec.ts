@@ -6,6 +6,7 @@ import { Navigate } from "../pageobjects/Navigate";
 import { AddNewUserPage } from "../pageobjects/AddNewUserPage";
 import { UserModel } from "../models/UserModel";
 import { UserFactory } from "../factory/UserFactory";
+import { UserTable } from "../components/UsersTable";
 
 test('Get all usernames registered', async ({ page }) => {
 
@@ -309,28 +310,19 @@ test('Add new user Admin', async ({ page }) => {
     const topBarMenu = new TopBarMenu(page)
     await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
 
-    const allBodyRows = page.getByRole('table').getByRole('rowgroup').nth(1).getByRole('row')
+    const userTable = new UserTable(page)
+    await userTable.editFirstAdminOnTheTable()
 
-    const currentAdminRows = allBodyRows.filter({
-        has: page.getByRole('cell').nth(2).getByText('Admin')
-    })
+    const addNewUserPage = new AddNewUserPage(page)
+    const fullUserToSearch = await addNewUserPage.getEmployeeName()
 
-    const firstAdminToSearch = currentAdminRows.nth(0)
-    await expect(firstAdminToSearch, "No Admin users found in the table")
-
-    await firstAdminToSearch
-        .locator('button')
-        .filter({ has: page.locator('i.bi-pencil-fill') }).click()
-
-    const fullUserToSearch = await page.getByRole('textbox', { name: 'Type for hints...' }).inputValue()
-    console.log(`User to search ${fullUserToSearch}`)
 
     const adminUser = UserFactory.createAdmin({
         employee: fullUserToSearch
     })
 
     await page.goBack()
-    const addNewUserPage = new AddNewUserPage(page)
+
     await addNewUserPage.addNewUser(adminUser)
     await addNewUserPage.checkUserWasAddedMessage()
 
@@ -347,28 +339,19 @@ test('Add new user ESS', async ({ page }) => {
     const topBarMenu = new TopBarMenu(page)
     await topBarMenu.userManagement.clickOnItem(topBarMenu.UserManagementItems.USERS)
 
-    const allBodyRows = page.getByRole('table').getByRole('rowgroup').nth(1).getByRole('row')
+    const userTable = new UserTable(page)
+    await userTable.editFirstESSOnTheTable()
 
-    const currentESSRows = allBodyRows.filter({
-        has: page.getByRole('cell').nth(2).getByText('ESS')
-    })
+    const addNewUserPage = new AddNewUserPage(page)
+    const fullUserToSearch = await addNewUserPage.getEmployeeName()
 
-    const firstESSToSearch = currentESSRows.nth(0)
-    await expect(firstESSToSearch, "No ESS users found in the table")
-
-    await firstESSToSearch
-        .locator('button')
-        .filter({ has: page.locator('i.bi-pencil-fill') }).click()
-
-    const fullUserToSearch = await page.getByRole('textbox', { name: 'Type for hints...' }).inputValue()
-    console.log(`User to search: ${fullUserToSearch}`)
 
     const ESSUser = UserFactory.createEmployeeESS({
         employee: fullUserToSearch
     })
 
     await page.goBack()
-    const addNewUserPage = new AddNewUserPage(page)
+
     await addNewUserPage.addNewUser(ESSUser)
     await addNewUserPage.checkUserWasAddedMessage()
 
