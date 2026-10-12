@@ -9,6 +9,7 @@ import { UserFactory } from "../factory/UserFactory";
 import { UserTable } from "../components/UsersTable";
 import { readFile } from 'fs/promises'
 import * as path from 'path'
+import { UserApiClient } from "../api/UsersApiClient";
 
 test('API Get all the users', async ({ page, request }) => {
 
@@ -28,6 +29,18 @@ test('API Get all the users', async ({ page, request }) => {
             Accept: 'application/json'
         }
     })
+
+    expect(response.ok()).toBeTruthy()
+
+    const bodyJson = await response.json()
+    console.log(JSON.stringify(await bodyJson))
+
+})
+
+test('API Get all the users - Refactor', async ({ request }) => {
+
+    const apiClient = await UserApiClient.fromSavedAuthState(request)
+    const response = await apiClient.getUsers()
 
     expect(response.ok()).toBeTruthy()
 
@@ -59,6 +72,25 @@ test('API Add a new user', async ({ page, request }) => {
         data: { "username": username, "password": password, "status": true, "userRoleId": 1, "empNumber": 7 }
 
     })
+
+    expect(response.ok()).toBeTruthy()
+
+    const bodyJson = await response.json()
+    console.log(JSON.stringify(await bodyJson))
+
+})
+
+test('API Add a new user - Refactor', async ({ request }) => {
+
+    const apiClient = await UserApiClient.fromSavedAuthState(request)
+    const response = await apiClient.createUser(
+        {
+            "username": 'user+' + crypto.randomUUID().slice(0, 30),
+            "password": 'P4ssw0rd.12',
+            "status": true,
+            "userRoleId": 1,
+            "empNumber": 7
+        })
 
     expect(response.ok()).toBeTruthy()
 
@@ -116,6 +148,36 @@ test('API Delete a user', async ({ page, request }) => {
     console.log(JSON.stringify(await usereDeletionResponseJson))
 
 })
+
+test('API Delete a user - Refactor', async ({ request }) => {
+
+    const apiClient = await UserApiClient.fromSavedAuthState(request)
+    const createUser = await apiClient.createUser(
+        {
+            "username": 'user+' + crypto.randomUUID().slice(0, 30),
+            "password": 'P4ssw0rd.12',
+            "status": true,
+            "userRoleId": 1,
+            "empNumber": 7
+        })
+
+    expect(createUser.ok()).toBeTruthy()
+
+    const bodyJson = await createUser.json()
+    console.log(JSON.stringify(await bodyJson))
+
+    const userId = await bodyJson.data.id
+    console.log(`userId: ${userId}`)
+
+    const userDeletionResponse = await apiClient.deleteUser(userId)
+    
+    expect(userDeletionResponse.ok()).toBeTruthy()
+
+    const usereDeletionResponseJson = await userDeletionResponse.json()
+    console.log(JSON.stringify(await usereDeletionResponseJson))
+})
+
+
 
 
 
