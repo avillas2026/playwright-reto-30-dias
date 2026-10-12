@@ -10,14 +10,9 @@ import { UserTable } from "../components/UsersTable";
 
 test('Get all usernames registered', async ({ page }) => {
 
-    const loginPage = new LoginPage(page)
-    await loginPage.doLogin('Admin', 'admin123')
+    const navigate = new Navigate(page)
+    await navigate.toUsers()
 
-    await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible()
-    await page.getByRole('link', { name: 'Admin' }).click()
-
-    await page.getByRole('navigation', { name: 'Topbar menu' }).getByText('User Management').click()
-    await page.getByRole('menuitem', { name: 'Users' }).click()
 
     const rows = page.getByRole('table').getByRole('row')
     const usernames: string[] = []
