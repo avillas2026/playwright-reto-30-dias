@@ -27,7 +27,7 @@ jobs:
     env: 
       ADMIN_USERNAME: ${{vars.ADMIN_USERNAME }}
       ADMIN_PASSWORD: ${{secrets.ADMIN_PASSWORD}}
-      GREP: ${{github.event.inputs.grep}} || 'Get all usernames registered'}}
+      GREP: ${{github.event.inputs.grep || 'Get all usernames registered'}}
       PROJECT: ${{github.event.inputs.project || 'admin'}}
     steps:
     - uses: actions/checkout@v4
