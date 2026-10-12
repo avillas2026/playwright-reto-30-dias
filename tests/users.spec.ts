@@ -357,3 +357,69 @@ test('Add new user ESS', async ({ page }) => {
 
 })
 
+
+
+test('Delete user Admin', async ({ page }) => {
+    //Arrgange
+    const navigate = new Navigate(page)
+    await navigate.toUsers()
+
+    const userTable = new UserTable(page)
+    await userTable.editFirstAdminOnTheTable()
+
+    const addNewUserPage = new AddNewUserPage(page)
+    const fullUserToSearch = await addNewUserPage.getEmployeeName()
+
+
+    const adminUser = UserFactory.createAdmin({
+        employee: fullUserToSearch
+    })
+
+    await page.goBack()
+
+    await addNewUserPage.addNewUser(adminUser)
+    await addNewUserPage.checkUserWasAddedMessage()
+
+    //Act
+    await userTable.clickOnDeletetActionByUsername(adminUser.userName)
+    await userTable.acceptDeleteUser()
+
+    //Assert
+    await addNewUserPage.checkUserWasSuccessfullyDeletedMessage()
+    await userTable.checkUserIsNotInTable(adminUser.userName)
+
+})
+
+
+test('Delete user Admin - Cancelado', async ({ page }) => {
+    //Arrgange
+    const navigate = new Navigate(page)
+    await navigate.toUsers()
+
+    const userTable = new UserTable(page)
+    await userTable.editFirstAdminOnTheTable()
+
+    const addNewUserPage = new AddNewUserPage(page)
+    const fullUserToSearch = await addNewUserPage.getEmployeeName()
+
+
+    const adminUser = UserFactory.createAdmin({
+        employee: fullUserToSearch
+    })
+
+    await page.goBack()
+
+    await addNewUserPage.addNewUser(adminUser)
+    await addNewUserPage.checkUserWasAddedMessage()
+
+    //Act
+    await userTable.clickOnDeletetActionByUsername(adminUser.userName)
+    await userTable.cancelDeleteUser()
+
+    //Assert
+    await userTable.checkDeleteDialogIsClosed()
+    await addNewUserPage.checkUserWasNotDeletedMessage()
+    await userTable.checkUserIsInTable(adminUser.userName)
+
+})
+
