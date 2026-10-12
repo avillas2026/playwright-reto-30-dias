@@ -27,7 +27,7 @@ jobs:
     env: 
       ADMIN_USERNAME: ${{vars.ADMIN_USERNAME }}
       ADMIN_PASSWORD: ${{secrets.ADMIN_PASSWORD}}
-      GREP: ${{github.event.inputs.grep || 'Get all usernames registered'}}
+      GREP: ${{github.event.inputs.grep}} || 'Get all usernames registered'}}
       PROJECT: ${{github.event.inputs.project || 'admin'}}
     steps:
     - uses: actions/checkout@v4
@@ -40,11 +40,15 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: |
-        if [ -n "GREP" ]; then
-          npx playwright test --grep "GREP" --project="PROJECT"
+        echo "Starting playwright tests..."
+        echo "Project selected: $PROJECT"
+        echo "Playwright filter: $GREP"
+        if [ -n "$GREP" ]; then
+          npx playwright test --grep "$GREP" --project="$PROJECT"
         else
-          npx playwright test --project="PROJECT"
-        fi
+          npx playwright test --project="$PROJECT"
+        fi  
+        echo "Playright test finished..."
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
