@@ -40,7 +40,7 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: |
-        if [ -n "${{ github.event.inputs.grep }}" ]; then
+        if [ -n "GREP" ]; then
           npx playwright test --grep "GREP" --project="PROJECT"
         else
           npx playwright test --project="PROJECT"
