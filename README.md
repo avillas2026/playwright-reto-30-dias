@@ -29,3 +29,16 @@ And check out the following files:
   - .\playwright.config.ts - Playwright Test configuration
 
 Visit https://playwright.dev/docs/intro for more information. ✨
+
+npx playwright test --grep "@tag1" --project="Admin" --headed
+# Ejecuta test que contengan el tag.
+
+
+npx playwright test --grep "@tag1|@tag2" --project="Admin" --headed
+# Ejecuta test que contengan alguno de los tags (o).
+
+npx playwright test --grep "(?=.*@tag1) (?=.*@tag2)" --project="Admin" --headed
+# Ejecuta test que contengan los 2 tags obligatoriamente (Y).
+
+npx playwright test --grep-invert "@tag1" --project="Admin" --headed
+# Ejecuta test que no contengan el tag (diferente).
